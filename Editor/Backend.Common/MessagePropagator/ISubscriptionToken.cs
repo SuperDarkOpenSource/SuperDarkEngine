@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 
 namespace Backend.Common.MessagePropagator
 {
-    public interface IMessagePropagator
+    public interface ISubscriptionToken
     {
 
-        T GetMessage<T>() where T : MessageBase, new();
+        Task Invoke(object[] paramz);
 
     }
 }
