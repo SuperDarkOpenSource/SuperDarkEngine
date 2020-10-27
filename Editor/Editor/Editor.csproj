@@ -20,8 +20,11 @@
     <PackageReference Include="Avalonia" Version="0.9.12" />
     <PackageReference Include="Avalonia.Desktop" Version="0.9.12" />
     <PackageReference Include="Avalonia.ReactiveUI" Version="0.9.12" />
+    <PackageReference Include="MessageBox.Avalonia" Version="0.9.6.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Backend.Common\Backend.Common.csproj" />
+    <ProjectReference Include="..\Backend.EngineInterop\Backend.EngineInterop.csproj" />
   </ItemGroup>
+  <Import Project="RustDependencies.targets" />
 </Project>

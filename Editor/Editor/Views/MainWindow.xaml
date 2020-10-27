@@ -12,6 +12,21 @@
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-    <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+  <Grid ColumnDefinitions="1*,1*" RowDefinitions="1*,1*">
+    <StackPanel Grid.Column="0" Grid.Row="0" Orientation="Vertical">
+
+      <StackPanel Orientation="Horizontal">
+        <TextBlock Text="{Binding Path=LowerValue}" />
+        <Slider  Value="{Binding Path=LowerValue}" Minimum="0" Maximum="100" MinWidth="200" />
+      </StackPanel>
+
+      <StackPanel Orientation="Horizontal">
+        <TextBlock Text="{Binding Path=HigherValue}" />
+        <Slider Value="{Binding Path=HigherValue}" Minimum="0" Maximum="100" MinWidth="200" />
+      </StackPanel>
+      
+      <Button Command="{Binding Path=InteropTest}" Content="Test Interop" />
+    </StackPanel>
+  </Grid>
 
 </Window>

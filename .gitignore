@@ -431,3 +431,10 @@ $RECYCLE.BIN/
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+
+.idea/*
+
+# Added by cargo
+
+target/*
+Cargo.lock
