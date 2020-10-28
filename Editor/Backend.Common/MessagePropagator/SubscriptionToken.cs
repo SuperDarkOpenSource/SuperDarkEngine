@@ -62,8 +62,6 @@ namespace Backend.Common.MessagePropagator
                 return;
             }
 
-            var func = _func.Invoke((T)paramz[0]);
-
             if(_dispacher == null)
             {
                 await Task.Run(() => _func((T)paramz[0]));

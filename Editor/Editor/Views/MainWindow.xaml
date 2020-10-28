@@ -26,6 +26,7 @@
       </StackPanel>
       
       <Button Command="{Binding Path=InteropTest}" Content="Test Interop" />
+      <Button Command="{Binding Path=MessagePropagatorTest}" Content="Test MessagePropagator" />
     </StackPanel>
   </Grid>
 

@@ -13,11 +13,6 @@ namespace Backend.Common.MessagePropagator
 {
     public abstract class MessageBase
     {
-        internal MessageBase()
-        {
-
-        }
-
         protected ISubscriptionToken AddSubscriber(ISubscriptionToken token)
         {
             _subscriptionTokens.Add(token);
@@ -58,8 +53,6 @@ namespace Backend.Common.MessagePropagator
 
     public class Message : MessageBase 
     {
-        internal Message() { }
-
         public async Task Publish()
         {
             await InvokeAll(new object[] { });
@@ -71,7 +64,6 @@ namespace Backend.Common.MessagePropagator
 
     public class Message<T> : MessageBase
     {
-        internal Message() { }
 
         public async Task Publish(T arg)
         {
