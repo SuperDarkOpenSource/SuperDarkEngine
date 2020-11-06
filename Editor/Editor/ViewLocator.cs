@@ -2,8 +2,11 @@
 // Licensed under the MIT license. See licence.md file in the project root for full license information.
 
 using System;
+using System.Reflection;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
+using Backend.Common.Tools;
+using Dock.Model;
 using Editor.ViewModels;
 
 namespace Editor
@@ -14,8 +17,26 @@ namespace Editor
 
         public IControl Build(object data)
         {
-            var name = data.GetType().FullName.Replace("ViewModel", "View");
-            var type = Type.GetType(name);
+            
+            Type type = null;
+
+            if(data is BaseToolWindow toolWindow)
+            {
+                ToolWindowAttribute toolWindowAttribute = 
+                    toolWindow.GetType().GetCustomAttribute<ToolWindowAttribute>();
+
+                type = toolWindowAttribute.ViewType;
+            }
+            else
+            {
+                // I take no responsibility for the code in this else statement. 
+                // Avalonia's default project generated this.
+                // ~Russell
+
+                var name = data.GetType().FullName.Replace("ViewModel", "View");
+                type = Type.GetType(name);
+            }
+
 
             if (type != null)
             {
@@ -23,13 +44,13 @@ namespace Editor
             }
             else
             {
-                return new TextBlock { Text = "Not Found: " + name };
+                return new TextBlock { Text = "Not Found: " + data.GetType().FullName };
             }
         }
 
         public bool Match(object data)
         {
-            return data is ViewModelBase;
+            return data is ViewModelBase || data is IDockable;
         }
     }
 }

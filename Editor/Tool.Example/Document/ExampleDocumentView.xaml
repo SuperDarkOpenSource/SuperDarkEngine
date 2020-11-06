@@ -1,0 +1,20 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Tool.Example.Document.ExampleDocumentView">
+  <StackPanel Orientation="Vertical">
+    <Grid ColumnDefinitions="1*" RowDefinitions="auto,1*">
+
+      <StackPanel Grid.Column="0" Grid.Row="0" Orientation="Horizontal">
+        <TextBlock Text="Hello World from a Document ToolWindow" />
+      </StackPanel>
+
+      <StackPanel Grid.Column="0" Grid.Row="1" Orientation="Horizontal">
+        <TextBox Text="{Binding Path=TestMessage,Mode=TwoWay}" />
+        <Button Content="Fire TestMessage" Command="{Binding Path=FireTestMessageCommand}" />
+      </StackPanel>
+    </Grid>
+  </StackPanel>
+</UserControl>

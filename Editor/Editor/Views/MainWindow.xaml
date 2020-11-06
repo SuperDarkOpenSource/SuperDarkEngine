@@ -3,6 +3,7 @@
         xmlns:vm="clr-namespace:Editor.ViewModels;assembly=Editor"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:idc="clr-namespace:Dock.Avalonia.Controls;assembly=Dock.Avalonia"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="Editor.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
@@ -12,22 +13,15 @@
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-  <Grid ColumnDefinitions="1*,1*" RowDefinitions="1*,1*">
-    <StackPanel Grid.Column="0" Grid.Row="0" Orientation="Vertical">
-
-      <StackPanel Orientation="Horizontal">
-        <TextBlock Text="{Binding Path=LowerValue}" />
-        <Slider  Value="{Binding Path=LowerValue}" Minimum="0" Maximum="100" MinWidth="200" />
-      </StackPanel>
-
-      <StackPanel Orientation="Horizontal">
-        <TextBlock Text="{Binding Path=HigherValue}" />
-        <Slider Value="{Binding Path=HigherValue}" Minimum="0" Maximum="100" MinWidth="200" />
-      </StackPanel>
-      
-      <Button Command="{Binding Path=InteropTest}" Content="Test Interop" />
-      <Button Command="{Binding Path=MessagePropagatorTest}" Content="Test MessagePropagator" />
-    </StackPanel>
-  </Grid>
-
+    <DockPanel>
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+        </StackPanel>
+        
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
+            <TextBlock Text="Editor" />
+        </StackPanel>
+        
+        <idc:DockControl VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Layout="{Binding Path=Layout}" />
+        
+    </DockPanel>
 </Window>

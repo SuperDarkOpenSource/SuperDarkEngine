@@ -1,88 +1,36 @@
-﻿using Backend.Common.MessagePropagator;
-using Backend.EngineInterop;
+﻿using System.Windows.Input;
 using ReactiveUI;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
+using Backend.Common.MessagePropagator;
+using Dock.Model;
 
 namespace Editor.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase
     {
-        public MainWindowViewModel()
+        public MainWindowViewModel(IFactory factory, IDock layout, IMessagePropagator messagePropagator)
         {
-            _MessagePropagator.GetMessage<TestMessage>().Subscribe(OnTestMessage);
-            _MessagePropagator.GetMessage<TestMessage1>().Subscribe(OnTestMessage1);
+            _messagePropagator = messagePropagator;
+
+            _layout = layout;
+            
+            _factory = factory;
         }
-
-
-        public ICommand InteropTest => ReactiveCommand.Create(DoInteropTest);
-
-        public ICommand MessagePropagatorTest => ReactiveCommand.Create(DoMessageTest);
-
-        public ulong LowerValue 
-        { 
-            get => _LowerValue; 
-            set => this.RaiseAndSetIfChanged(ref _LowerValue, value); 
-        }
-
-        public ulong HigherValue 
-        { 
-            get => _HigherValue; 
-            set => this.RaiseAndSetIfChanged(ref _HigherValue, value); 
-        }
-
-
-        private void DoInteropTest()
+        
+        public IFactory Factory
         {
-            ulong sum = EngineInterop.super_dark_sum(LowerValue, HigherValue);
-
-            var msgbox = MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow("Super Dark Engine Interop", 
-                    $"Result from pub fn super_dark_sum() = {sum}");
-
-            msgbox.Show();
-
+            get => _factory;
+            set => this.RaiseAndSetIfChanged(ref _factory, value);
         }
 
-        private async Task DoMessageTest()
+        public IDock Layout
         {
-            await _MessagePropagator.GetMessage<TestMessage>().Publish();
-            await _MessagePropagator.GetMessage<TestMessage1>().Publish("Hello World Again!");
+            get => _layout;
+            set => this.RaiseAndSetIfChanged(ref _layout, value);
         }
 
-        Task OnTestMessage()
-        {
-
-            var msgbox = MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow("Super Dark MessageTest",
-                    "Hello World");
-
-            msgbox.Show();
-
-            return Task.CompletedTask;
-        }
-
-        Task OnTestMessage1(string msg)
-        {
-            var msgbox = MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow("Super Dark MessageTest",
-                    msg);
-
-            msgbox.Show();
-
-            return Task.CompletedTask;
-        }
-
-        public class TestMessage : Message { }
-
-        public class TestMessage1 : Message<string> { }
-
-        private ulong _LowerValue = 0;
-        private ulong _HigherValue = 10;
-
-        private IMessagePropagator _MessagePropagator = new MessagePropagator();
+        private IMessagePropagator _messagePropagator;
+        
+        private IFactory _factory;
+        private IDock _layout;
     }
 }

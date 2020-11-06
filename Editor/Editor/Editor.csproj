@@ -7,7 +7,6 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
-    <Folder Include="Models\" />
     <Compile Update="**\*.xaml.cs">
       <DependentUpon>%(Filename)</DependentUpon>
     </Compile>
@@ -17,14 +16,26 @@
     <AvaloniaResource Include="Assets\**" />
   </ItemGroup>
   <ItemGroup>
+    <AvaloniaResource Remove="Models\**" />
+    <AvaloniaXaml Remove="Models\**" />
+    <Compile Remove="Models\**" />
+    <EmbeddedResource Remove="Models\**" />
+    <None Remove="Models\**" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Avalonia" Version="0.9.12" />
     <PackageReference Include="Avalonia.Desktop" Version="0.9.12" />
     <PackageReference Include="Avalonia.ReactiveUI" Version="0.9.12" />
+    <PackageReference Include="Dock.Avalonia" Version="0.9.12" />
+    <PackageReference Include="Dock.Avalonia.Themes.Default" Version="0.9.12" />
+    <PackageReference Include="Dock.Model" Version="0.9.12" />
+    <PackageReference Include="Dock.Model.ReactiveUI" Version="0.9.12" />
     <PackageReference Include="MessageBox.Avalonia" Version="0.9.6.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Backend.Common\Backend.Common.csproj" />
     <ProjectReference Include="..\Backend.EngineInterop\Backend.EngineInterop.csproj" />
+    <ProjectReference Include="..\Tool.Example\Tool.Example.csproj" />
   </ItemGroup>
   <Import Project="RustDependencies.targets" />
 </Project>
