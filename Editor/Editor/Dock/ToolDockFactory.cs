@@ -3,17 +3,20 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
+using System.Threading.Tasks;
 using Avalonia.Data;
 using Backend.Common.MessagePropagator;
 using Backend.Common.Tools;
 using Dock.Avalonia.Controls;
 using Dock.Model;
 using Dock.Model.Controls;
+using Editor.MenuBar.Reflection;
 using Editor.ViewModels;
+using ReactiveUI;
 
 namespace Editor.Dock
 {
-    class ToolDockFactory : Factory
+    public class ToolDockFactory : Factory
     {
         public ToolDockFactory(IMessagePropagator messagePropagator, Hashtable dependenciesTable)
         {
@@ -34,16 +37,19 @@ namespace Editor.Dock
             {
                 listDocuments.Add(ConstructToolWindow(item.Value));
             }
+
+            var documentDock = new DocumentDock()
+            {
+                Id = "DocumentsPane",
+                Title = "DocumentsPane",
+                Proportion = double.NaN,
+                ActiveDockable = (listDocuments.Count > 0) ? listDocuments[0] : null,
+                VisibleDockables = listDocuments,
+                IsCollapsable = false
+            };
             
             var horizontalDockables = CreateList<IDockable>(
-                new DocumentDock()
-                {
-                    Id = "DocumentsPane",
-                    Title = "DocumentsPane",
-                    Proportion = double.NaN,
-                    ActiveDockable = (listDocuments.Count > 0) ? listDocuments[0] : null,
-                    VisibleDockables = listDocuments
-                }
+                documentDock
             );
 
             if (leftFloating.Count > 0)
@@ -103,6 +109,7 @@ namespace Editor.Dock
                 Orientation = Orientation.Horizontal,
                 ActiveDockable = null,
                 VisibleDockables = mainVisibleDockables
+                
             };
             
             var rootViewModel = new RootViewModel()
@@ -121,6 +128,8 @@ namespace Editor.Dock
             root.DefaultDockable = rootViewModel;
             root.VisibleDockables = CreateList<IDockable>(rootViewModel);
 
+            _rootDock = root;
+            
             return root;
         }
 
@@ -156,6 +165,7 @@ namespace Editor.Dock
                 ["BottomSplitter"] = () => _derp,
                 ["TopPane"] = () => _derp,
                 ["TopSplitter"] = () => _derp,
+                ["WindowDocument"] = () => _derp,
             };
 
             foreach (var item in _floatingToolWindows)
@@ -187,6 +197,106 @@ namespace Editor.Dock
             };
             
             base.InitLayout(layout);
+        }
+
+        public MenuItemViewModel GetMenuBarItems()
+        {
+            MenuItemViewModel floatingToolsMenuItem = new MenuItemViewModel()
+            {
+                Name = "Tool Windows",
+                Command = null,
+                CommandParameter = null,
+                SortOrder = 0,
+                Children = new List<MenuItemViewModel>()
+            };
+
+            int floatingOrder = 0;
+            foreach (var item in _floatingToolWindows)
+            {
+                floatingToolsMenuItem.Children.Add(new MenuItemViewModel()
+                {
+                    Name = item.Key,
+                    Command = ReactiveCommand.CreateFromTask<object>(InstantiateNewToolWindow),
+                    CommandParameter = item.Value,
+                    Children = null,
+                    SortOrder = floatingOrder++
+                });
+            }
+
+            MenuItemViewModel documentToolMenuItems = new MenuItemViewModel()
+            {
+                Name = "Document Windows",
+                Command = null,
+                CommandParameter = null,
+                SortOrder = 1,
+                Children = new List<MenuItemViewModel>()
+            };
+
+            int documentOrder = 0;
+            foreach (var item in _documentToolWindows)
+            {
+                documentToolMenuItems.Children.Add(new MenuItemViewModel()
+                {
+                    Name = item.Key,
+                    Command = ReactiveCommand.CreateFromTask<object>(InstantiateNewToolWindow),
+                    CommandParameter = item.Value,
+                    Children = null,
+                    SortOrder = documentOrder++
+                });
+            }
+
+            return new MenuItemViewModel()
+            {
+                Name = "View",
+                Command = null,
+                CommandParameter = null,
+                Children = new List<MenuItemViewModel>(){ floatingToolsMenuItem, documentToolMenuItems },
+                SortOrder = 5
+            };
+        }
+
+        private Task InstantiateNewToolWindow(object parameter)
+        {
+            ToolWindowFactoryInfo factoryInfo = (ToolWindowFactoryInfo)parameter;
+
+            BaseToolWindow toolWindow = ConstructToolWindow(factoryInfo);
+
+            IDockable toolWindowDock = null;
+            
+            if (factoryInfo.ToolWindowAttribute.ToolWindowType == ToolWindowType.Document)
+            {
+                toolWindowDock = new DocumentDock()
+                {
+                    Proportion = Double.NaN,
+                    ActiveDockable = toolWindow,
+                    VisibleDockables = CreateList<IDockable>(toolWindow)
+                };
+            }
+            else
+            {
+                toolWindowDock = new ToolDock()
+                {
+                    Proportion = Double.NaN,
+                    ActiveDockable = toolWindow,
+                    VisibleDockables = CreateList<IDockable>(toolWindow)
+                };
+            }
+
+            toolWindowDock.Id = factoryInfo.ToolWindowAttribute.DisplayName;
+            toolWindowDock.Title = factoryInfo.ToolWindowAttribute.DisplayName;
+            
+            var window = CreateWindowFrom(toolWindowDock);
+
+            window.Owner = _rootDock;
+            window.Factory = this;
+            
+            // REEEEEEEEEEE why is there no fucking documentation for this fucking library?
+            AddWindow(_rootDock, window);
+            
+            // DO NOT set this boolean to true. Don't do it. Trust me.
+            window.Present(false);
+            
+            return Task.CompletedTask;
         }
 
         private void RegisterToolWindows()
@@ -335,6 +445,8 @@ namespace Editor.Dock
         private IMessagePropagator _messagePropagator;
         private Hashtable _DI;
         private object _derp = new object();
+
+        private IRootDock _rootDock = null;
 
         private Dictionary<string, ToolWindowFactoryInfo> _floatingToolWindows = new Dictionary<string, ToolWindowFactoryInfo>();
         private Dictionary<string, ToolWindowFactoryInfo> _documentToolWindows = new Dictionary<string, ToolWindowFactoryInfo>();

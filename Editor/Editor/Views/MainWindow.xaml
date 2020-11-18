@@ -15,6 +15,16 @@
 
     <DockPanel>
         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+            <Menu Items="{Binding Path=MenuBarItems}">
+                <Menu.Styles>
+                    <Style Selector="MenuItem">
+                        <Setter Property="Header" Value="{Binding Path=Name}" />
+                        <Setter Property="Items" Value="{Binding Path=Children}" />
+                        <Setter Property="Command" Value="{Binding Path=Command}" />
+                        <Setter Property="CommandParameter" Value="{Binding Path=CommandParameter}" />
+                    </Style>
+                </Menu.Styles>
+            </Menu>
         </StackPanel>
         
         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
