@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Backend.Common.Tools
+namespace Backend.UI.Tools
 {
     public enum DefaultFloatingPostion
     {

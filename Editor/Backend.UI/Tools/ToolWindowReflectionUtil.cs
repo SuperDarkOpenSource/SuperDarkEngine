@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 
-namespace Backend.Common.Tools
+namespace Backend.UI.Tools
 {
     public class ToolWindowReflectionUtil
     {
@@ -19,7 +20,7 @@ namespace Backend.Common.Tools
                         type.GetCustomAttribute<ToolWindowAttribute>();
 
                     if(toolWindowAttribute != null && 
-                       type.BaseType == typeof(BaseToolWindow))
+                       type.IsSubclassOf(typeof(BaseToolWindow)))
                     {
                         list.Add(type);
                     }

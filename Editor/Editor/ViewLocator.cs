@@ -5,7 +5,7 @@ using System;
 using System.Reflection;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
-using Backend.Common.Tools;
+using Backend.UI.Tools;
 using Dock.Model;
 using Editor.ViewModels;
 

@@ -1,14 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using Avalonia;
-using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Logging.Serilog;
 using Avalonia.ReactiveUI;
-using DynamicData.Kernel;
 
 namespace Editor
 {
@@ -29,7 +23,6 @@ namespace Editor
         public static AppBuilder BuildAvaloniaApp()
             => AppBuilder.Configure<App>()
                 .UsePlatformDetect()
-                .LogToDebug()
                 .UseReactiveUI();
 
         private static void LoadPluginAssemblies()

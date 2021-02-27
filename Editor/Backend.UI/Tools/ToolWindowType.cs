@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Backend.Common.Tools
+namespace Backend.UI.Tools
 {
     public enum ToolWindowType
     {

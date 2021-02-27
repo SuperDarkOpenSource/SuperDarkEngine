@@ -2,7 +2,7 @@
 using Dock.Model.Controls;
 using System.Reflection;
 
-namespace Backend.Common.Tools
+namespace Backend.UI.Tools
 {
     public class BaseToolWindow : Tool
     {
