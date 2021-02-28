@@ -1,0 +1,16 @@
+[package]
+name = "gfx_vulkan"
+description = "Vulkan Backend for SuperDarkEngine"
+version = "0.1.0"
+authors = ["Russell Johnson <encrypteddata0@gmail.com>", "James Sumihiro <jasumihiro@gmail.com>"]
+keywords = ["game", "engine", "superdark"]
+categories = ["game-engines"]
+edition = "2018"
+
+[lib]
+crate-type = ["rlib"]
+
+[dependencies]
+gfx_core = { path = "../gfx_core/" }
+
+ash = "0.31.0"

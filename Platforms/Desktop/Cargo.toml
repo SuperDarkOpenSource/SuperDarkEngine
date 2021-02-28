@@ -1,0 +1,17 @@
+[package]
+name = "desktop"
+description = "Rust Game Engine"
+version = "0.1.0"
+authors = ["Russell Johnson <encrypteddata0@gmail.com>", "James Sumihiro <jasumihiro@gmail.com>"]
+keywords = ["game", "engine", "superdark"]
+categories = ["game-engines"]
+edition = "2018"
+
+[target.'cfg(any(target_os = "windows"))'.dependencies]
+super_dark_engine = { path = "../../Engine/Engine/", features = ["vulkan", "directx"] }
+
+[target.'cfg(any(target_os = "linux"))'.dependencies]
+super_dark_engine = { path = "../../Engine/Engine/" }
+
+[target.'cfg(any(target_os = "macos"))'.dependencies]
+super_dark_engine = { path = "../../Engine/Engine/", features = ["metal"] }
