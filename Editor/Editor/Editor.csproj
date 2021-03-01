@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <TargetFramework>netcoreapp5.0</TargetFramework>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
@@ -23,19 +23,21 @@
     <None Remove="Models\**" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="0.9.12" />
-    <PackageReference Include="Avalonia.Desktop" Version="0.9.12" />
-    <PackageReference Include="Avalonia.ReactiveUI" Version="0.9.12" />
-    <PackageReference Include="Dock.Avalonia" Version="0.9.12" />
-    <PackageReference Include="Dock.Avalonia.Themes.Default" Version="0.9.12" />
-    <PackageReference Include="Dock.Model" Version="0.9.12" />
-    <PackageReference Include="Dock.Model.ReactiveUI" Version="0.9.12" />
-    <PackageReference Include="MessageBox.Avalonia" Version="0.9.6.1" />
+    <PackageReference Include="Avalonia" Version="0.10.0" />
+    <PackageReference Include="Avalonia.Desktop" Version="0.10.0" />
+    <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.0" />
+    <PackageReference Include="Dock.Avalonia" Version="0.10.0" />
+    <PackageReference Include="Dock.Avalonia.Themes.Default" Version="0.10.0" />
+    <PackageReference Include="Dock.Model" Version="0.10.0" />
+    <PackageReference Include="Dock.Model.ReactiveUI" Version="0.10.0" />
+    <PackageReference Include="MessageBox.Avalonia" Version="1.0.5" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Backend.Common\Backend.Common.csproj" />
     <ProjectReference Include="..\Backend.EngineInterop\Backend.EngineInterop.csproj" />
+    <ProjectReference Include="..\Backend.Messages\Backend.Messages.csproj" />
     <ProjectReference Include="..\Tool.Example\Tool.Example.csproj" />
+    <ProjectReference Include="..\Tool.SceneViewer\Tool.SceneViewer.csproj" />
   </ItemGroup>
   <Import Project="RustDependencies.targets" />
 </Project>

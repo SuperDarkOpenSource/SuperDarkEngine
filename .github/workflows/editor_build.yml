@@ -1,0 +1,18 @@
+on: [push]
+
+name: Editor Build (Rust)
+
+jobs:
+  linux_build:
+    name: Linux Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+      - uses: actions/setup-dotnet@v1.7.2
+        with:
+          dotnet-version: '5.0'
+      - name: Build
+        run: dotnet build --configuration Release
