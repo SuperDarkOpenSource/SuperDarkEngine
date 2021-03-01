@@ -10,8 +10,17 @@ edition = "2018"
 [lib]
 crate-type = ["cdylib"]
 
-[features]
+
+[target.'cfg(any(target_os = "windows"))'.features]
+default = ["vulkan", "directx"]
+
+[target.'cfg(any(target_os = "linux"))'.features]
 default = ["vulkan"]
+
+[target.'cfg(any(target_os = "macos"))'.features]
+default = ["metal"]
+
+[features]
 
 # Vulkan Graphics Features
 vulkan = ["gfx_vulkan"]

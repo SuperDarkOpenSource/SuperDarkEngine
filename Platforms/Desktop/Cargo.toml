@@ -7,11 +7,5 @@ keywords = ["game", "engine", "superdark"]
 categories = ["game-engines"]
 edition = "2018"
 
-[target.'cfg(any(target_os = "windows"))'.dependencies]
-super_dark_engine = { path = "../../Engine/Engine/", features = ["vulkan", "directx"] }
-
-[target.'cfg(any(target_os = "linux"))'.dependencies]
+[dependencies]
 super_dark_engine = { path = "../../Engine/Engine/" }
-
-[target.'cfg(any(target_os = "macos"))'.dependencies]
-super_dark_engine = { path = "../../Engine/Engine/", features = ["metal"] }
