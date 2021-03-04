@@ -1,4 +1,6 @@
 use crate::core::window::{Window, NullWindow};
+use std::cell::RefCell;
+use std::rc::Rc;
 
 pub struct GameEngineCreationInfo
 {
@@ -18,18 +20,22 @@ impl GameEngineCreationInfo {
 pub struct GameEngine
 {
     create_info: Box<GameEngineCreationInfo>,
-    do_next_frame: bool,
+    do_next_frame: Rc<RefCell<bool>>,
 }
 
 impl GameEngine {
 
     pub fn new(create_info: Box<GameEngineCreationInfo>) -> Self {
+        let mut do_next_frame = Rc::new(RefCell::new(true));
+
         let mut engine = GameEngine {
             create_info,
-            do_next_frame: true
+            do_next_frame: do_next_frame.clone()
         };
 
-        //engine.create_info.window.register_msg_handler("hello",  self::set_run_false);
+        engine.create_info.window.register_msg_handler("quit",  Box::new(move |payload: &str| {
+            (*do_next_frame.borrow_mut()) = false;
+        }));
 
         engine
     }
@@ -38,14 +44,10 @@ impl GameEngine {
 
         let mut window = &mut self.create_info.window;
 
-        loop {
+        while *(self.do_next_frame.borrow()) {
+
             window.update();
+
         }
-    }
-
-    pub fn set_run_false(&mut self, _msg: &str) -> bool {
-        self.do_next_frame = false;
-
-        true
     }
 }

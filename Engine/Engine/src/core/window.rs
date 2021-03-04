@@ -2,10 +2,9 @@
 use std::ffi::{CStr, CString};
 use std::ptr::null;
 use serde_json::Value;
-use std::iter::Map;
 use std::collections::HashMap;
 
-pub type WindowMsgHandler = fn (&str) -> bool;
+pub type WindowMsgHandler = Box<dyn Fn(&str)>;
 
 pub type ExternalWindowUpdateFn = fn();
 pub type ExternalWindowReceiveMsgFn = fn() -> *const i8;
@@ -60,7 +59,7 @@ impl ExternalWindow
         }
     }
 
-    fn poll_external_msg_queue(&self) {
+    fn poll_external_msg_queue(&mut self) {
         loop {
             let msg_raw: *const i8 = (&self.receive_fn)();
 
@@ -86,9 +85,9 @@ impl ExternalWindow
         }
     }
 
-    fn handle_received_msg(&self, command: &str, payload: &str) {
+    fn handle_received_msg(&mut self, command: &str, payload: &str) {
         if self.command_map.contains_key(command) {
-            (&self.command_map[command])(payload);
+            (self.command_map[command])(payload);
         } else {
             println!("Command {} not found in ExternalWindow command handlers", command);
         }
@@ -111,8 +110,8 @@ impl Window for ExternalWindow
         (&self.deliver_fn)(cstr.as_ptr());
     }
 
-    fn register_msg_handler(&mut self, command: &str, handler: fn(&str) -> bool) {
-        unimplemented!()
+    fn register_msg_handler(&mut self, command: &str, handler: WindowMsgHandler) {
+        self.command_map.insert(String::from(command), handler);
     }
 }
 
