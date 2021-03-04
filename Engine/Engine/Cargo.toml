@@ -33,6 +33,8 @@ dx11 = []
 metal = []
 
 [dependencies]
+serde_json = "1.0.64"
+
 gfx_core = { path = "../gfx_core/" }
 
 gfx_vulkan = { path = "../gfx_vulkan/", optional = true  }
