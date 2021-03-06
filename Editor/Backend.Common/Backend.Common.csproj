@@ -8,8 +8,4 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.0" />
-  </ItemGroup>
-
 </Project>

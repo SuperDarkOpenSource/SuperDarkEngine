@@ -6,7 +6,7 @@ using Backend.UI.Tools;
 
 namespace Backend.UI.Renderer
 {
-    public abstract class RendererBaseToolWindow : BaseToolWindow, IDisposable
+    public abstract class RendererBaseToolWindow : BaseToolWindow
     {
         protected RendererBaseToolWindow(IMessagePropagator messagePropagator) : 
             base(messagePropagator)
@@ -28,13 +28,13 @@ namespace Backend.UI.Renderer
         {
             _renderWindowGuid = Guid.NewGuid();
 
-            _MessagePropagator.GetMessage<RendererCreated>().Publish(_renderWindowGuid);
+            _messagePropagator.GetMessage<RendererCreated>().Publish(_renderWindowGuid);
         }
 
         private void RegisterMessages()
         {
-            _rendererUpdateToken =
-                _MessagePropagator.GetMessage<RendererSwapImage>().Subscribe(OnRenderSwapImageMessage);
+            HandleSubscriptionOnDispose(_messagePropagator.GetMessage<RendererSwapImage>()
+                .Subscribe(OnRenderSwapImageMessage, ThreadHandler.UIThread));
         }
 
         /**
@@ -58,23 +58,13 @@ namespace Backend.UI.Renderer
             return Task.CompletedTask;
         }
 
-        protected virtual void Dispose(bool disposing)
+        protected override void OnDisposal()
         {
-            if (disposing)
-            {
-                _MessagePropagator.GetMessage<RendererDestroyed>().Publish(_renderWindowGuid);
-                _MessagePropagator.GetMessage<RendererSwapImage>().Unsubscribe(_rendererUpdateToken);
-            }
+            Task.Run(
+                async () => await _messagePropagator.GetMessage<RendererDestroyed>().Publish(_renderWindowGuid));
         }
 
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-        
         private Guid _renderWindowGuid;
-        private ISubscriptionToken _rendererUpdateToken;
         private RenderControl _renderControl = null;
     }
 }

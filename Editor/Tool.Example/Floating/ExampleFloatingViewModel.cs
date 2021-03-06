@@ -33,7 +33,7 @@ namespace Tool.Example.Floating
 
         private void RegisterMessages()
         {
-            _MessagePropagator.GetMessage<ExampleTestMessage>()
+            _messagePropagator.GetMessage<ExampleTestMessage>()
                 .Subscribe(OnExampleTestMessage, ThreadHandler.UIThread);
 
         }

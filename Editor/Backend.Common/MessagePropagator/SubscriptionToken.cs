@@ -1,79 +1,75 @@
-﻿using Avalonia.Threading;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
+﻿using System;
 using System.Threading.Tasks;
 
 namespace Backend.Common.MessagePropagator
 {
     public class SubscriptionToken : ISubscriptionToken
     {
-        internal SubscriptionToken(IDispatcher dispatcher, Func<Task> func, Func<bool> pred)
+        internal SubscriptionToken(MessageBase messageBase, ITaskDispatcher dispatcher, Func<Task> func, Func<bool> pred)
         {
-            _dispacher = dispatcher;
+            _dispatcher = dispatcher;
 
             _func = func;
 
             _pred = pred;
+
+            _messageBaseBase = messageBase;
         }
 
-        
-
-        async Task ISubscriptionToken.Invoke(object[] paramz)
+        async Task ISubscriptionToken.Invoke(object[] _)
         {
             if (!(_pred?.Invoke() ?? true))
             {
                 return;
             }
-
-
-            if(_dispacher == null)
-            {
-                await Task.Run(_func);
-            }
-            else
-            {
-                await _dispacher.InvokeAsync(_func);
-            }
             
+            await _dispatcher.Dispatch(_func);
         }
 
-        private Func<Task> _func;
-        private Func<bool> _pred;
-        private IDispatcher _dispacher;
+        public void Unsubscribe()
+        {
+            _messageBaseBase.Unsubscribe(this);
+        }
+
+        private readonly Func<Task> _func;
+        private readonly Func<bool> _pred;
+        private readonly ITaskDispatcher _dispatcher;
+        private readonly MessageBase _messageBaseBase;
     }
 
-    public class SubscriptionToken<T>: ISubscriptionToken
+    public class SubscriptionToken<T> : ISubscriptionToken
     {
-        internal SubscriptionToken(IDispatcher dispatcher, Func<T, Task> func, Func<bool> pred)
+        internal SubscriptionToken(MessageBase messageBase, ITaskDispatcher dispatcher, Func<T, Task> func, Func<T, bool> pred)
         {
-            _dispacher = dispatcher;
+            _dispatcher = dispatcher;
 
             _func = func;
 
             _pred = pred;
+
+            _messageBase = messageBase;
         }
 
-        public async Task Invoke(object[] paramz)
+        public async Task Invoke(object[] p)
         {
-            if(!(_pred?.Invoke() ?? true))
+            T parameter = (T)p[0];
+            
+            if(!(_pred?.Invoke(parameter) ?? true))
             {
                 return;
             }
 
-            if(_dispacher == null)
-            {
-                await Task.Run(() => _func((T)paramz[0]));
-            }
-            else
-            {
-                await _dispacher.InvokeAsync(() => _func((T)paramz[0]));
-            }
+            await _dispatcher.Dispatch(_func, parameter);
         }
 
-        private IDispatcher _dispacher;
-        private Func<T, Task> _func;
-        private Func<bool> _pred;
+        public void Unsubscribe()
+        {
+            _messageBase.Unsubscribe(this);
+        }
+
+        private readonly ITaskDispatcher _dispatcher;
+        private readonly Func<T, Task> _func;
+        private readonly Func<T, bool> _pred;
+        private readonly MessageBase _messageBase;
     }
 }
