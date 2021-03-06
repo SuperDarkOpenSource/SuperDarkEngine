@@ -1,65 +1,71 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
-using Avalonia;
-using Avalonia.Platform;
-using Avalonia.Threading;
-using ReactiveUI;
 
 namespace Backend.Common.MessagePropagator
 {
     public abstract class MessageBase
     {
+        public Dictionary<ThreadHandler, ITaskDispatcher> TaskDispatchers { get; set; }
+        
+        public IMessageExceptionHandler MessageExceptionHandler { get; set; }
+        
         protected ISubscriptionToken AddSubscriber(ISubscriptionToken token)
         {
-            _subscriptionTokens.Add(token);
+            lock (_subscriptionTokens)
+            {
+                _subscriptionTokens.Add(token);
 
-            return token;
+                return token;
+            }
         }
 
         public void Unsubscribe(ISubscriptionToken token)
-            => _subscriptionTokens.Remove(token);
-
-        protected async Task InvokeAll(object[] paramz)
         {
-            foreach(ISubscriptionToken token in _subscriptionTokens)
+            lock (_subscriptionTokens)
             {
-                await token.Invoke(paramz);
+                _subscriptionTokens.Remove(token);
             }
         }
 
-        protected IDispatcher GetDispatcher(ThreadHandler handler)
+        protected async Task InvokeAll(object[] parameters)
         {
-            switch(handler)
+            IReadOnlyList<ISubscriptionToken> subscribers = null;
+
+            lock (_subscriptionTokens)
             {
-                case ThreadHandler.UIThread:
-                    return Dispatcher.UIThread;
-
-                case ThreadHandler.Background:
-                    return null;
-
-                default:
-                    return Dispatcher.UIThread;
-                
+                subscribers = new List<ISubscriptionToken>(_subscriptionTokens);
+            }
+            
+            foreach(ISubscriptionToken token in subscribers)
+            {
+                try
+                {
+                    await token.Invoke(parameters);
+                }
+                catch (Exception e)
+                {
+                    await MessageExceptionHandler.OnExceptionRaised(e);
+                }
             }
         }
 
-        List<ISubscriptionToken> _subscriptionTokens = new List<ISubscriptionToken>();
-        
+        private readonly List<ISubscriptionToken> _subscriptionTokens = new List<ISubscriptionToken>();
     }
 
     public class Message : MessageBase 
     {
         public async Task Publish()
         {
-            await InvokeAll(new object[] { });
+            await InvokeAll(null);
         }
 
-        public ISubscriptionToken Subscribe(Func<Task> func, ThreadHandler runOnThread = ThreadHandler.Default, Func<bool> shouldRunPredicate = null)
-            => AddSubscriber(new SubscriptionToken(GetDispatcher(runOnThread), func, shouldRunPredicate));
+        public ISubscriptionToken Subscribe(Func<Task> func, ThreadHandler runOnThread, Func<bool> shouldRunPredicate = null)
+        {
+            ITaskDispatcher taskDispatcher = TaskDispatchers[runOnThread];
+            
+            return AddSubscriber(new SubscriptionToken(this, taskDispatcher, func, shouldRunPredicate));
+        }
     }
 
     public class Message<T> : MessageBase
@@ -70,9 +76,12 @@ namespace Backend.Common.MessagePropagator
             await InvokeAll(new object[] { arg });
         }
 
-        public ISubscriptionToken Subscribe(Func<T, Task> func, ThreadHandler runOnThread = ThreadHandler.Default, Func<bool> shouldRunPredicate = null)
-            => AddSubscriber(new SubscriptionToken<T>(GetDispatcher(runOnThread), func, shouldRunPredicate));
+        public ISubscriptionToken Subscribe(Func<T, Task> func, ThreadHandler runOnThread, Func<T, bool> shouldRunPredicate = null)
+        {
+            ITaskDispatcher taskDispatcher = TaskDispatchers[runOnThread];
 
+            return AddSubscriber(new SubscriptionToken<T>(this, taskDispatcher, func, shouldRunPredicate));
+        }
     }
 
     

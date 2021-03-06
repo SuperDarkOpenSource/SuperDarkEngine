@@ -3,6 +3,7 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Backend.Common.MessagePropagator;
+using Backend.UI.MessagePropagator;
 using Dock.Model;
 using Editor.Dock;
 using Editor.ViewModels;
@@ -56,7 +57,10 @@ namespace Editor
 
         private void CreateDependencies()
         {
-            _messagePropagator = new MessagePropagator();
+            MessagePropagator messagePropagator = new MessagePropagator(new LogConsoleMessageExceptionHandler());
+            messagePropagator.RegisterTaskDispatcher(ThreadHandler.UIThread, new AvaloniaUITaskDispatcher());
+
+            _messagePropagator = messagePropagator;
 
             _dependencies.Add(typeof(IMessagePropagator), _messagePropagator);
         }

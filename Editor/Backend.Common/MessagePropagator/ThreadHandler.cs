@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Backend.Common.MessagePropagator
+﻿namespace Backend.Common.MessagePropagator
 {
     public enum ThreadHandler
     {

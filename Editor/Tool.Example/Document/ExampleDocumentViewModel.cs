@@ -37,7 +37,7 @@ namespace Tool.Example.Document
 
         private async Task FireTestMessage()
         {
-            await _MessagePropagator.GetMessage<ExampleTestMessage>().Publish(_testMessage);
+            await _messagePropagator.GetMessage<ExampleTestMessage>().Publish(_testMessage);
         }
 
         private void CreateCommands()
