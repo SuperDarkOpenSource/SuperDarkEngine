@@ -75,9 +75,9 @@ impl ExternalWindow
                 Value::Object(value) => {
                     if value.contains_key("command") && value.contains_key("payload") {
                         let command = value["command"].as_str().unwrap();
-                        let payload = value["payload"].as_str().unwrap();
+                        let payload = value["payload"].to_string();
 
-                        self.handle_received_msg(command, payload);
+                        self.handle_received_msg(command, payload.as_str());
                     }
                 }
                 _ => {}
