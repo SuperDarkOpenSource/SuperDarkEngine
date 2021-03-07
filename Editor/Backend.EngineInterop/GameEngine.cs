@@ -30,7 +30,7 @@ namespace Backend.EngineInterop
 
             _engineInstance = EngineInterop.gameengine_create(creation_info);
 
-            _messagePropagator.GetMessage<SendRawMsg>().Subscribe(OnSendRawMsgMessage);
+            _messagePropagator.GetMessage<SendRawMsg>().Subscribe(OnSendRawMsgMessage, ThreadHandler.Default);
         }
 
         public void Run()
