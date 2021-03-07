@@ -6,9 +6,9 @@ use std::collections::HashMap;
 
 pub type WindowMsgHandler = Box<dyn Fn(&str)>;
 
-pub type ExternalWindowUpdateFn = fn();
-pub type ExternalWindowReceiveMsgFn = fn() -> *const i8;
-pub type ExternalWindowDeliverMsgFn = fn(*const i8);
+pub type ExternalWindowUpdateFn = extern fn();
+pub type ExternalWindowReceiveMsgFn = extern fn() -> *const i8;
+pub type ExternalWindowDeliverMsgFn = extern fn(*const i8);
 
 pub trait Window
 {
@@ -115,11 +115,11 @@ impl Window for ExternalWindow
     }
 }
 
-fn external_update_fn_stub() {
+extern fn external_update_fn_stub() {
 }
 
-fn external_i8_fn_stub(_: *const i8) { }
+extern fn external_i8_fn_stub(_: *const i8) { }
 
-fn external_i8_receive_stub() -> *const i8 {
+extern fn external_i8_receive_stub() -> *const i8 {
     null()
 }

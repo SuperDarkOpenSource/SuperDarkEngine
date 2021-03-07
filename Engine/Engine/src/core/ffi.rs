@@ -1,4 +1,3 @@
-use std::ffi::c_void;
 use crate::core::window::{ExternalWindow, ExternalWindowUpdateFn, ExternalWindowReceiveMsgFn, ExternalWindowDeliverMsgFn};
 use crate::core::game_engine::{GameEngineCreationInfo, GameEngine};
 

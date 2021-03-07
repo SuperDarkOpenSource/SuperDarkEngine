@@ -26,14 +26,14 @@ pub struct GameEngine
 impl GameEngine {
 
     pub fn new(create_info: Box<GameEngineCreationInfo>) -> Self {
-        let mut do_next_frame = Rc::new(RefCell::new(true));
+        let do_next_frame = Rc::new(RefCell::new(true));
 
         let mut engine = GameEngine {
             create_info,
             do_next_frame: do_next_frame.clone()
         };
 
-        engine.create_info.window.register_msg_handler("quit",  Box::new(move |payload: &str| {
+        engine.create_info.window.register_msg_handler("quit",  Box::new(move |_: &str| {
             (*do_next_frame.borrow_mut()) = false;
         }));
 
@@ -42,7 +42,7 @@ impl GameEngine {
 
     pub fn run(&mut self) {
 
-        let mut window = &mut self.create_info.window;
+        let window = &mut self.create_info.window;
 
         while *(self.do_next_frame.borrow()) {
 
