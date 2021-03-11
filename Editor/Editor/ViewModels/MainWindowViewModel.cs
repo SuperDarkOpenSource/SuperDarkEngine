@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using ReactiveUI;
 using Backend.Common.MessagePropagator;
+using Backend.EngineInterop;
 using Dock.Model;
 using Editor.Dock;
 using Editor.MenuBar.Reflection;
@@ -20,6 +22,12 @@ namespace Editor.ViewModels
 
             _menuItems = MenuBarFactory.GetAllMenuBarItems();
             _menuItems.Add(factory.GetMenuBarItems());
+
+            Task.Run(() =>
+            {
+                GameEngine engine = new GameEngine(_messagePropagator);
+                engine.Run();
+            });
         }
         
         public IFactory Factory
