@@ -1,9 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
-        <CargoPackage>super_dark_engine</CargoPackage>
-        <CargoWorkspacePath>$(SolutionDir)</CargoWorkspacePath>
+        <!-- By default pick the release folder -->
+        <RustFolder>release</RustFolder>
+        <RustFolder Condition="'$(Configuration)' == 'Debug'">debug</RustFolder>
     </PropertyGroup>
 
-    <Import Project="RustBuild.targets" />
+    <PropertyGroup>
+        <DependencyName>super_dark_engine</DependencyName>
+        <DependencyLocation>$(SolutionDir)/target/$(RustFolder)/</DependencyLocation>
+    </PropertyGroup>
+
+    <!-- Set platform dependent stuff -->
+    <PropertyGroup Condition="'$([MSBuild]::IsOsPlatform(`WINDOWS`))' == 'true'">
+        <LibraryExtension>dll</LibraryExtension>
+        <LibraryPrefix />
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$([MSBuild]::IsOsPlatform(`LINUX`))' == 'true'">
+        <LibraryExtension>so</LibraryExtension>
+        <LibraryPrefix>lib</LibraryPrefix>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$([MSBuild]::IsOsPlatform(`OSX`))' == 'true'">
+        <LibraryExtension>dylib</LibraryExtension>
+        <LibraryPrefix>lib</LibraryPrefix>
+    </PropertyGroup>
+
+    <!-- Define the item we are copying -->
+    <ItemGroup>
+        <EngineDependencies Include="$(DependencyLocation)/$(LibraryPrefix)$(DependencyName).$(LibraryExtension)" />
+    </ItemGroup>
+
+
+    <Target Name="CopyEngineDependency" AfterTargets="AfterBuild">
+        <Message Text="Selected Input File: @(EngineDependencies)" />
+        <Message Text="Selected Output Folder: $(TargetDir)" />
+        <Copy SourceFiles="@(EngineDependencies)"
+              DestinationFolder="$(TargetDir)"
+              UseSymboliclinksIfPossible="true"
+              SkipUnchangedFiles="true"
+              ContinueOnError="true" />
+    </Target>
 </Project>
