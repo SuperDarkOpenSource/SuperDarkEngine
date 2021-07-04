@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace Backend.Common.Reflection
 {
-    public class ReflectionUtil
+    public static class ReflectionUtil
     {
         public static Dictionary<Type, AttributeType> 
             GetAllTypesWithAttribute<AttributeType, BaseType>(AppDomain domain) 

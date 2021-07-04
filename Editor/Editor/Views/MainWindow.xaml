@@ -3,14 +3,13 @@
         xmlns:vm="clr-namespace:Editor.ViewModels;assembly=Editor"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:idc="clr-namespace:Dock.Avalonia.Controls;assembly=Dock.Avalonia"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="Editor.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
         Title="Editor">
 
     <Design.DataContext>
-        <vm:MainWindowViewModel/>
+        <vm:MainWindowViewModel />
     </Design.DataContext>
 
     <DockPanel>
@@ -31,7 +30,29 @@
             <TextBlock Text="Editor" />
         </StackPanel>
         
-        <idc:DockControl VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Layout="{Binding Path=Layout}" />
+        <Grid ColumnDefinitions="5*,Auto,1*" RowDefinitions="1*">
+            <TabControl Grid.Column="0" Grid.Row="0" Items="{Binding Path=DocumentToolWindows}"
+                        SelectedItem="{Binding Path=SelectedDocumentToolWindow}"
+                        SelectedContent="{Binding Path=DocumentControl}">
+                
+                <TabControl.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Path=ToolName }" />
+                    </DataTemplate>
+                </TabControl.ItemTemplate>
+            </TabControl>
+            <GridSplitter Grid.Column="1" Grid.Row="0" Width="5" Background="Black" />
+            <TabControl Grid.Column="2" Grid.Row="0" Items="{Binding Path=FloatingToolWindows}"
+                        SelectedItem="{Binding Path=SelectedFloatingToolWindow}"
+                        SelectedContent="{Binding Path=FloatingControl}">
+                
+                <TabControl.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Path=ToolName }" />
+                    </DataTemplate>
+                </TabControl.ItemTemplate>
+            </TabControl>
+        </Grid>
         
     </DockPanel>
 </Window>
