@@ -1,10 +1,14 @@
+using System;
 using System.Collections;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using Avalonia.Markup.Xaml.Styling;
+using Avalonia.Styling;
 using Backend.Common.MessagePropagator;
 using Backend.UI.MessagePropagator;
 using Dock.Model;
+using Dock.Model.Core;
 using Editor.Dock;
 using Editor.ViewModels;
 using Editor.Views;
@@ -35,20 +39,14 @@ namespace Editor
 
                 mainWindow.Closing += (sender, args) =>
                 {
-                    if (mainWindowViewModel.Layout is IDock dock)
-                    {
-                        dock.Close();
-                    }
+                    mainWindowViewModel.Layout.Close.Execute(mainWindowViewModel.Layout);
                 };
 
                 desktop.MainWindow = mainWindow;
 
                 desktop.Exit += (sender, args) =>
                 {
-                    if (mainWindowViewModel.Layout is IDock dock)
-                    {
-                        dock.Close();
-                    }
+                    mainWindowViewModel.Layout.Close.Execute(mainWindowViewModel.Layout);
                 };
             }
 

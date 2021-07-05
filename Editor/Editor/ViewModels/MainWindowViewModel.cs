@@ -5,6 +5,7 @@ using ReactiveUI;
 using Backend.Common.MessagePropagator;
 using Backend.EngineInterop;
 using Dock.Model;
+using Dock.Model.Core;
 using Editor.Dock;
 using Editor.MenuBar.Reflection;
 

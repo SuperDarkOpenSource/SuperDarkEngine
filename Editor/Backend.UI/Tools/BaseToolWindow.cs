@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Backend.Common.MessagePropagator;
-using Dock.Model.Controls;
 using System.Reflection;
+using Dock.Model.ReactiveUI.Controls;
 
 namespace Backend.UI.Tools
 {
