@@ -5,14 +5,14 @@ namespace Backend.Common.MessagePropagator
 {
     public class BackgroundTaskDispatcher : ITaskDispatcher
     {
-        public Task Dispatch(Func<Task> task)
+        public async Task Dispatch(Func<Task> task)
         {
-            return Task.Run(task);
+            await Task.Run(task);
         }
 
-        public Task Dispatch<T>(Func<T, Task> task, T parameter)
+        public async Task Dispatch<T>(Func<T, Task> task, T parameter)
         {
-            return Task.Run(async () => await task.Invoke(parameter));
+            await Task.Run(async () => await task.Invoke(parameter));
         }
     }
 }

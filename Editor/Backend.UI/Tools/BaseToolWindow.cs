@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using Backend.Common.MessagePropagator;
+using Dock.Model.Controls;
 using System.Reflection;
-using ReactiveUI;
 
 namespace Backend.UI.Tools
 {
-    public class BaseToolWindow : ReactiveObject, IDisposable
+    public class BaseToolWindow : Tool, IDisposable
     {
         protected BaseToolWindow(IMessagePropagator messagePropagator)
         {
@@ -14,14 +14,10 @@ namespace Backend.UI.Tools
 
             ToolWindowAttribute toolWindowAttribute =
                 this.GetType().GetCustomAttribute<ToolWindowAttribute>();
-            
-            ToolName = toolWindowAttribute?.DisplayName;
 
-            //Id = toolWindowAttribute.DisplayName;
-            //Title = toolWindowAttribute.DisplayName;
+            Id = toolWindowAttribute.DisplayName;
+            Title = toolWindowAttribute.DisplayName;
         }
-        
-        public string ToolName { get; }
 
         protected BaseToolWindow(BaseToolWindow copy)
         {

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using Backend.Common.MessagePropagator;
 using Backend.Common.Reflection;
 
 namespace Editor.MenuBar.Reflection
@@ -11,10 +10,8 @@ namespace Editor.MenuBar.Reflection
     public class MenuBarFactory
     {
         
-        public static List<MenuItemViewModel> GetAllMenuBarItems(IMessagePropagator messagePropagator)
+        public static List<MenuItemViewModel> GetAllMenuBarItems()
         {
-            var args = new object[] { messagePropagator };
-            
             var types = ReflectionUtil
                 .GetAllTypesWithAttribute<MenuBarItemAttribute, 
                     BaseMenuBarItem>(AppDomain.CurrentDomain);
@@ -23,34 +20,29 @@ namespace Editor.MenuBar.Reflection
 
             foreach (var item in types)
             {
-                try
+                MenuItemViewModel menuItemViewModel = new MenuItemViewModel
                 {
-                    MenuItemViewModel menuItemViewModel = new MenuItemViewModel
+                    Name = item.Value.DisplayName,
+                    SortOrder = item.Value.Order,
+                    Command = (Activator.CreateInstance(item.Key) as BaseMenuBarItem)?.Command
+                };
+
+                Debug.Assert(menuItemViewModel.Command != null);
+                
+                if (!menus.ContainsKey(item.Value.CategoryName))
+                {
+                    MenuItemViewModel root = new MenuItemViewModel
                     {
-                        Name = item.Value.DisplayName,
-                        SortOrder = item.Value.Order,
-                        Command = (Activator.CreateInstance(item.Key, args) as BaseMenuBarItem)?.Command
+                        Name = "_" + item.Value.CategoryName,
+                        Command = null,
+                        SortOrder = 0,
+                        Children = new List<MenuItemViewModel>()
                     };
 
-                    Debug.Assert(menuItemViewModel.Command != null);
-
-                    if (!menus.ContainsKey(item.Value.CategoryName))
-                    {
-                        MenuItemViewModel root = new MenuItemViewModel
-                        {
-                            Name = "_" + item.Value.CategoryName,
-                            Command = null,
-                            SortOrder = 0,
-                            Children = new List<MenuItemViewModel>()
-                        };
-
-                        menus.Add(item.Value.CategoryName, root);
-                    }
-
-                    menus[item.Value.CategoryName].Children.Add(menuItemViewModel);
+                    menus.Add(item.Value.CategoryName, root);
                 }
-                // Ignore MenuBarItems that fail to build (unusual constructor)
-                catch (Exception) { }
+                
+                menus[item.Value.CategoryName].Children.Add(menuItemViewModel);
             }
 
             var result = menus.Select(e => e.Value)

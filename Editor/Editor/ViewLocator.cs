@@ -6,6 +6,7 @@ using System.Reflection;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Backend.UI.Tools;
+using Dock.Model;
 using Editor.ViewModels;
 
 namespace Editor
@@ -49,7 +50,7 @@ namespace Editor
 
         public bool Match(object data)
         {
-            return data is ViewModelBase;
+            return data is ViewModelBase || data is IDockable;
         }
     }
 }
