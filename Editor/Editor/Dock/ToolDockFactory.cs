@@ -10,6 +10,9 @@ using Backend.UI.Tools;
 using Dock.Avalonia.Controls;
 using Dock.Model;
 using Dock.Model.Controls;
+using Dock.Model.Core;
+using Dock.Model.ReactiveUI;
+using Dock.Model.ReactiveUI.Controls;
 using Editor.MenuBar.Reflection;
 using Editor.ViewModels;
 using ReactiveUI;
@@ -26,7 +29,7 @@ namespace Editor.Dock
             RegisterToolWindows();
         }
 
-        public override IDock CreateLayout()
+        public override IRootDock CreateLayout()
         {
 
             var leftFloating = GetDefaultFloatingWindowsByPostion(DefaultFloatingPostion.Left);
@@ -63,7 +66,7 @@ namespace Editor.Dock
                     VisibleDockables = leftFloating
                 });
                 
-                horizontalDockables.Insert(1, new SplitterDock()
+                horizontalDockables.Insert(1, new SplitterDockable()
                 {
                     Id = "LeftSplitter",
                     Title = "LeftSplitter"
@@ -72,7 +75,7 @@ namespace Editor.Dock
 
             if (rightFloating.Count > 0)
             {
-                horizontalDockables.Add(new SplitterDock()
+                horizontalDockables.Add(new SplitterDockable()
                 {
                     Id = "RightSplitter",
                     Title = "RightSplitter"
@@ -141,7 +144,7 @@ namespace Editor.Dock
                 [nameof(IProportionalDock)] = () => _derp,
                 [nameof(IDocumentDock)] = () => _derp,
                 [nameof(IToolDock)] = () => _derp,
-                [nameof(ISplitterDock)] = () => _derp,
+                [nameof(ISplitterDockable)] = () => _derp,
                 [nameof(IDockWindow)] = () => _derp,
                 [nameof(IDocument)] = () => _derp,
                 [nameof(ITool)] = () => _derp,

@@ -6,7 +6,7 @@ using System.Reflection;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Backend.UI.Tools;
-using Dock.Model;
+using Dock.Model.Core;
 using Editor.ViewModels;
 
 namespace Editor
