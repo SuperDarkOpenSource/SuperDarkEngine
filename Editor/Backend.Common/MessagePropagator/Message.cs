@@ -55,9 +55,9 @@ namespace Backend.Common.MessagePropagator
 
     public class Message : MessageBase 
     {
-        public async Task Publish()
+        public Task Publish()
         {
-            await InvokeAll(null);
+            return InvokeAll(null);
         }
 
         public ISubscriptionToken Subscribe(Func<Task> func, ThreadHandler runOnThread, Func<bool> shouldRunPredicate = null)
@@ -71,9 +71,9 @@ namespace Backend.Common.MessagePropagator
     public class Message<T> : MessageBase
     {
 
-        public async Task Publish(T arg)
+        public Task Publish(T arg)
         {
-            await InvokeAll(new object[] { arg });
+            return InvokeAll(new object[] { arg });
         }
 
         public ISubscriptionToken Subscribe(Func<T, Task> func, ThreadHandler runOnThread, Func<T, bool> shouldRunPredicate = null)

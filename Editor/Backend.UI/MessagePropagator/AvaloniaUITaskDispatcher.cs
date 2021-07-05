@@ -7,14 +7,14 @@ namespace Backend.UI.MessagePropagator
 {
     public class AvaloniaUITaskDispatcher : ITaskDispatcher
     {
-        public async Task Dispatch(Func<Task> task)
+        public Task Dispatch(Func<Task> task)
         {
-            await _dispatcher.InvokeAsync(task);
+            return _dispatcher.InvokeAsync(task);
         }
 
-        public async Task Dispatch<T>(Func<T, Task> task, T parameter)
+        public Task Dispatch<T>(Func<T, Task> task, T parameter)
         {
-            await _dispatcher.InvokeAsync(async () => await task(parameter));
+            return _dispatcher.InvokeAsync(async () => await task(parameter));
         }
 
         private readonly Dispatcher _dispatcher = Dispatcher.UIThread;
