@@ -17,14 +17,6 @@ namespace Editor
 {
     public class App : Application
     {
-        public static readonly Styles FluentLight = new Styles
-        {
-            new StyleInclude(new Uri("avares://AvaloniaDemo/Styles"))
-            {
-                Source = new Uri("avares://AvaloniaDemo/Themes/FluentLight.axaml")
-            }
-        };
-        
         public override void Initialize()
         {
             AvaloniaXamlLoader.Load(this);
