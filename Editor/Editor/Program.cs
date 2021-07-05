@@ -23,7 +23,6 @@ namespace Editor
         public static AppBuilder BuildAvaloniaApp()
             => AppBuilder.Configure<App>()
                 .UsePlatformDetect()
-                .LogToTrace()
                 .UseReactiveUI();
 
         private static void LoadPluginAssemblies()
