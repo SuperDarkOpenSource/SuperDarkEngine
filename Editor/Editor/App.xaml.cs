@@ -39,14 +39,14 @@ namespace Editor
 
                 mainWindow.Closing += (sender, args) =>
                 {
-                    mainWindowViewModel.Layout.Close.Execute(mainWindowViewModel.Layout);
+                    mainWindowViewModel.Layout.Close.Execute(null);
                 };
 
                 desktop.MainWindow = mainWindow;
 
                 desktop.Exit += (sender, args) =>
                 {
-                    mainWindowViewModel.Layout.Close.Execute(mainWindowViewModel.Layout);
+                    mainWindowViewModel.Layout.Close.Execute(null);
                 };
             }
 
